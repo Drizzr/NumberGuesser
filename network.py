@@ -8,10 +8,9 @@ class Network:
     def __init__(self, sizes):
         self.num_layers = len(sizes)
         self.sizes = sizes
-        self.biases = [np.random.randn(y) for y in sizes[1:]]
-        self.weights = [np.random.randn(x, y) 
+        self.biases = [0.1*np.random.randn(y) for y in sizes[1:]]
+        self.weights = [0.1*np.random.randn(x, y) 
                         for x, y in zip(sizes[:-1], sizes[1:])]
-
 
     def feedforward(self, a):
         for b, w in zip(self.biases, self.weights):
@@ -19,21 +18,42 @@ class Network:
             a = sigmoid(np.dot(w.T, a).T+b)
         return a
     
-    def SGD(self, training_data, controll_data, epochs, mini_batch_size, eta, test_data=None):
-        if test_data: n_test = len(test_data)
+    def SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None):
+        if test_data: 
+            n_test = len(test_data)
+            print(f"Epoch {0}: {self.evaluate(test_data)} / {n_test} ")
+
         n = len(training_data)
         for j in range(epochs):
+            random.shuffle(training_data)
+
+            mini_batches2 = []
+            controll2 = []
+            #controll = [controll_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
+            #print(controll[0][0])
+            #print(np.array(training_data[0:30]).shape)
+            for k in range(0, n, mini_batch_size):
+                batch, controll_batch = [], []
+                for tupel in training_data[k:k+mini_batch_size]:
+                    batch.append(tupel[0])
+                    controll_batch.append(tupel[1])
+                #print(training_data[k:k+mini_batch_size][1])
+                mini_batches2.append(np.array(batch))
+                controll2.append(np.array(controll_batch))
+                
+            print(controll2[0][0])
             #random.shuffle(training_data)
-            mini_batches = [training_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
+            #mini_batches = [training_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
                 #for k in range(0, n, mini_batch_size))
-            controll = [controll_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
-            data = zip(mini_batches, controll)
+            #controll = [controll_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
+            data = zip(mini_batches2, controll2)
             for mini_batch, controll in data:
-                self.update_mini_batch(np.array(mini_batch), np.array(controll), eta)
+                #print(np.array(controll).shape)
+                self.update_mini_batch(mini_batch, controll, eta)
             if test_data:
-                print(f"Epoch {j}: {self.evaluate(test_data)} / {n_test}")
+                print(f"Epoch {j+1}: {self.evaluate(test_data)} / {n_test}")
             else:
-                print(f"Epoch {j} complete")
+                print(f"Epoch {j+1} complete")
 
     def update_mini_batch(self, mini_batch, controll, eta):
 
@@ -62,6 +82,7 @@ class Network:
         activation = x
         activations = [x] 
         zs = [] 
+
         for b, w in list(zip(self.biases, self.weights)):
             z = np.dot(activations[-1], w) + b
             zs.append(z)
@@ -97,6 +118,6 @@ def sigmoid_prime(z):
     return sigmoid(z)*(1-sigmoid(z))
 #print(net.weights)
 
-training_data, controll, validation_data, test_data = load_data_wrapper()
+training_data, validation_data, test_data = load_data_wrapper()
 net = Network([784, 100, 10])
-net.SGD(training_data, controll, 30, 10, 3, test_data=test_data)
+net.SGD(training_data, 30, 10, 3, test_data=test_data)
