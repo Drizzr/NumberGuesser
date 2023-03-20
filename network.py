@@ -8,7 +8,7 @@ class Network:
     def __init__(self, sizes):
         self.num_layers = len(sizes)
         self.sizes = sizes
-        self.biases = [np.random.randn(1, y) for y in sizes[1:]]
+        self.biases = [np.random.randn(y) for y in sizes[1:]]
         self.weights = [np.random.randn(x, y) 
                         for x, y in zip(sizes[:-1], sizes[1:])]
 
@@ -16,15 +16,14 @@ class Network:
     def feedforward(self, a):
         for b, w in zip(self.biases, self.weights):
 
-            a = sigmoid(np.dot(w.T, a).T+b[0])
+            a = sigmoid(np.dot(w.T, a).T+b)
         return a
     
     def SGD(self, training_data, controll_data, epochs, mini_batch_size, eta, test_data=None):
-        if test_data: n_test = len(training_data)
+        if test_data: n_test = len(test_data)
         n = len(training_data)
-        mini_batches = []
         for j in range(epochs):
-            random.shuffle(training_data)
+            #random.shuffle(training_data)
             mini_batches = [training_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
                 #for k in range(0, n, mini_batch_size))
             controll = [controll_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
@@ -68,11 +67,9 @@ class Network:
             zs.append(z)
             activation = sigmoid(z)
             activations.append(activation)
-        
 
         delta = self.cost_derivative(activations[-1], y) * sigmoid_prime(zs[-1])
         nabla_b[-1] = delta.mean(0)
-        #print((self.biases[-1]-nabla_b[-1]).shape)
         nabla_w[-1] = np.dot(delta.T, activations[-2]).T / len(y)
 
         for l in range(2, self.num_layers):
@@ -102,4 +99,4 @@ def sigmoid_prime(z):
 
 training_data, controll, validation_data, test_data = load_data_wrapper()
 net = Network([784, 100, 10])
-net.SGD(training_data, controll, 30, 10, 1, test_data=test_data)
+net.SGD(training_data, controll, 30, 10, 3, test_data=test_data)
