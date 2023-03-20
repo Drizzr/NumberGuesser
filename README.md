@@ -1,4 +1,4 @@
-# Ai
+# Number Guesser
 
 This project was heavily inspired by the following book:
 http://neuralnetworksanddeeplearning.com
