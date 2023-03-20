@@ -1,7 +1,8 @@
 import numpy as np
 import random
-
+import time
 from mis_loader import load_data_wrapper
+from matplotlib import pyplot as plt
 
 class Network:
 
@@ -41,7 +42,7 @@ class Network:
                 mini_batches2.append(np.array(batch))
                 controll2.append(np.array(controll_batch))
                 
-            print(controll2[0][0])
+            #print(controll2[0][0])
             #random.shuffle(training_data)
             #mini_batches = [training_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
                 #for k in range(0, n, mini_batch_size))
@@ -120,4 +121,16 @@ def sigmoid_prime(z):
 
 training_data, validation_data, test_data = load_data_wrapper()
 net = Network([784, 100, 10])
-net.SGD(training_data, 30, 10, 3, test_data=test_data)
+start_time = time.time()
+net.SGD(training_data, 3, 10, 3, test_data=test_data)
+print(f"finished in {time.time() - start_time}, seconds")
+
+for tupel in test_data:
+    reshaped_image = tupel[0].reshape((28, 28))
+    result = np.argmax(net.feedforward(tupel[0]))
+    #if result != tupel[1]:
+    print(result, result==tupel[1], "desired output:", tupel[1])
+    plt.imshow(reshaped_image, cmap='gray')
+    plt.show()
+    
+    
