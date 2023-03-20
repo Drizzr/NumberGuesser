@@ -129,7 +129,7 @@ for tupel in test_data:
     reshaped_image = tupel[0].reshape((28, 28))
     result = np.argmax(net.feedforward(tupel[0]))
     #if result != tupel[1]:
-    print(result, result==tupel[1], "desired output:", tupel[1])
+    print(f"guess: {result}, desired output: {tupel[1]}, {result==tupel[1]}")
     plt.imshow(reshaped_image, cmap='gray')
     plt.show()
     
