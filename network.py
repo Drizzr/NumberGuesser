@@ -19,6 +19,7 @@ class Network:
         return a
     
     def SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None):
+        start_time = time.time()
         if test_data: 
             n_test = len(test_data)
             print(f"Epoch {0}: {self.evaluate(test_data)} / {n_test} ")
@@ -54,6 +55,11 @@ class Network:
                 print(f"Epoch {j+1}: {self.evaluate(test_data)} / {n_test}")
             else:
                 print(f"Epoch {j+1} complete")
+        
+        print("-----------------------------")
+        print(f"finished in {round(time.time() - start_time, 4)} seconds 🥵")       
+        print("-----------------------------")
+
 
     def update_mini_batch(self, mini_batch, controll, eta):
 
@@ -121,9 +127,7 @@ def sigmoid_prime(z):
 if __name__ == "__main__":
     training_data, validation_data, test_data = load_data_wrapper()
     net = Network([784, 100, 10])
-    start_time = time.time()
     net.SGD(training_data, 3, 10, 3, test_data=test_data)
-    print(f"finished in {round(time.time() - start_time, 4)} seconds")
 
     random.shuffle(test_data)
 
