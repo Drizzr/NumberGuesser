@@ -15,7 +15,6 @@ class Network:
 
     def feedforward(self, a):
         for b, w in zip(self.biases, self.weights):
-
             a = sigmoid(np.dot(w.T, a).T+b)
         return a
     
@@ -119,20 +118,21 @@ def sigmoid_prime(z):
     return sigmoid(z)*(1-sigmoid(z))
 #print(net.weights)
 
-training_data, validation_data, test_data = load_data_wrapper()
-net = Network([784, 100, 10])
-start_time = time.time()
-net.SGD(training_data, 3, 10, 3, test_data=test_data)
-print(f"finished in {round(time.time() - start_time, 4)} seconds")
+if __name__ == "__main__":
+    training_data, validation_data, test_data = load_data_wrapper()
+    net = Network([784, 100, 10])
+    start_time = time.time()
+    net.SGD(training_data, 3, 10, 3, test_data=test_data)
+    print(f"finished in {round(time.time() - start_time, 4)} seconds")
 
-random.shuffle(test_data)
+    random.shuffle(test_data)
 
-for tupel in test_data:
-    reshaped_image = tupel[0].reshape((28, 28))
-    result = np.argmax(net.feedforward(tupel[0]))
-    #if result != tupel[1]:
-    print(f"guess: {result}, desired output: {tupel[1]}, {result==tupel[1]}")
-    plt.imshow(reshaped_image, cmap='gray')
-    plt.show()
-    
-    
+    for tupel in test_data:
+        reshaped_image = tupel[0].reshape((28, 28))
+        result = np.argmax(net.feedforward(tupel[0]))
+        #if result != tupel[1]:
+        print(f"guess: {result}, desired output: {tupel[1]}, {result==tupel[1]}")
+        plt.imshow(reshaped_image, cmap='gray')
+        plt.show()
+        
+        
