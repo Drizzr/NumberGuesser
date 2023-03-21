@@ -1,8 +1,8 @@
 import numpy as np
 import random
 import time
-from mis_loader import load_data_wrapper
-from matplotlib import pyplot as plt
+
+
 
 class Network:
 
@@ -124,19 +124,6 @@ def sigmoid_prime(z):
     return sigmoid(z)*(1-sigmoid(z))
 #print(net.weights)
 
-if __name__ == "__main__":
-    training_data, validation_data, test_data = load_data_wrapper()
-    net = Network([784, 100, 10])
-    net.SGD(training_data, 3, 10, 3, test_data=test_data)
 
-    random.shuffle(test_data)
-
-    for tupel in test_data:
-        reshaped_image = tupel[0].reshape((28, 28))
-        result = np.argmax(net.feedforward(tupel[0]))
-        #if result != tupel[1]:
-        print(f"guess: {result}, desired output: {tupel[1]}, {result==tupel[1]}")
-        plt.imshow(reshaped_image, cmap='gray')
-        plt.show()
         
         
