@@ -123,7 +123,9 @@ training_data, validation_data, test_data = load_data_wrapper()
 net = Network([784, 100, 10])
 start_time = time.time()
 net.SGD(training_data, 3, 10, 3, test_data=test_data)
-print(f"finished in {time.time() - start_time}, seconds")
+print(f"finished in {round(time.time() - start_time, 4)} seconds")
+
+random.shuffle(test_data)
 
 for tupel in test_data:
     reshaped_image = tupel[0].reshape((28, 28))
